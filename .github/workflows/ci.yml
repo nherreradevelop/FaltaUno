@@ -1,0 +1,99 @@
+# Integración continua (Plan de calidad - SQA):
+# en cada pull request y push a develop/main se ejecutan el análisis estático,
+# el formato, la compilación y las pruebas. Si alguna etapa falla, no se puede hacer merge.
+name: CI
+
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop, main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  calidad:
+    name: Lint y formato
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+
+  api:
+    name: API - compilación y pruebas
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: faltauno
+          POSTGRES_PASSWORD: faltauno_dev
+          POSTGRES_DB: faltauno_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U faltauno"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      NODE_ENV: test
+      POSTGRES_URL_TEST: postgres://faltauno:faltauno_dev@localhost:5432/faltauno_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      # Los pasos se activan solos cuando exista api/package.json
+      - name: Instalar dependencias
+        if: hashFiles('api/package.json') != ''
+        working-directory: api
+        run: npm install
+      - name: Compilar
+        if: hashFiles('api/package.json') != ''
+        working-directory: api
+        run: npm run build --if-present
+      - name: Pruebas
+        if: hashFiles('api/package.json') != ''
+        working-directory: api
+        run: npm test --if-present
+
+  web:
+    name: Web - compilación
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Instalar dependencias
+        if: hashFiles('web/package.json') != ''
+        working-directory: web
+        run: npm install
+      - name: Compilar
+        if: hashFiles('web/package.json') != ''
+        working-directory: web
+        run: npm run build --if-present
+
+  mobile:
+    name: Mobile - verificación de tipos
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Instalar dependencias
+        if: hashFiles('mobile/package.json') != ''
+        working-directory: mobile
+        run: npm install
+      - name: Verificar tipos
+        if: hashFiles('mobile/package.json') != ''
+        working-directory: mobile
+        run: npx tsc --noEmit

@@ -94,6 +94,18 @@ npm run format         # formatear todo
 npm run format:check   # verificar el formato sin modificar
 ```
 
+### TypeScript estricto
+
+`tsconfig.base.json` define el modo estricto para todo el repositorio. El `tsconfig.json` de cada proyecto lo extiende:
+
+```jsonc
+// api/tsconfig.json y web/tsconfig.json
+{ "extends": "../tsconfig.base.json", "compilerOptions": { /* opciones propias del proyecto */ } }
+
+// mobile/tsconfig.json (Expo ya trae su base; se combinan las dos)
+{ "extends": ["expo/tsconfig.base", "../tsconfig.base.json"] }
+```
+
 > Al crear `web` (Vite) o `mobile` (Expo), las plantillas pueden traer su propio ESLint: borren su `eslint.config.*` y quiten ESLint de su `package.json`, para que se use la configuración de la raíz.
 
 ## n8n
@@ -105,8 +117,15 @@ npm run n8n:exportar   # tu n8n -> carpeta n8n/
 npm run n8n:importar   # carpeta n8n/ -> tu n8n
 ```
 
+## Integración continua
+
+GitHub Actions (`.github/workflows/ci.yml`) se ejecuta en cada pull request y push a `develop` o `main`:
+lint y formato siempre; compilación y pruebas de `api`, `web` y `mobile` en cuanto cada proyecto tenga su `package.json`.
+
 ## Forma de trabajo
 
-- Cada cambio en una rama propia y entra a `main` por pull request.
+- Ramas permanentes: `develop` (integración) y `main` (versión lista para producción).
+- Cada funcionalidad o corrección en una rama `feature/...` o `fix/...`, que entra a `develop` por pull request revisado por otro integrante y con el CI en verde.
+- Cada entrega se pasa de `develop` a `main` y se etiqueta con su versión (`v0.1.0`, ...).
 - **Migraciones:** nunca modificar un script que ya se aplicó; los cambios van siempre en un archivo nuevo con el número siguiente (`003_...sql`).
 - Las pruebas automáticas se ejecutan siempre contra la base local, nunca contra la compartida.
