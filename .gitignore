@@ -3,3 +3,23 @@ node_modules
 dist
 coverage
 .expo
+.env.*
+!.env.example
+
+# Configuración personal de VS Code (se comparten solo settings y extensiones recomendadas)
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Builds nativos de Expo
+mobile/android/
+mobile/ios/

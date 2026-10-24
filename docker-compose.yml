@@ -2,9 +2,9 @@
 # Levantar:  docker compose up -d
 # Detener:   docker compose down        (los datos se conservan en los volúmenes)
 # Borrar todo, incluidos los datos:  docker compose down -v
-#
-# Si ya levantaste el entorno de la carpeta FaltaUno-entorno, detenelo primero
-# (docker compose down en esa carpeta): este archivo usa los mismos nombres y suma Mailpit.
+
+# Nombre del proyecto: separa estos contenedores y volúmenes de otras copias (por ejemplo, la demo)
+name: faltauno-dev
 
 services:
   postgres:
@@ -16,7 +16,7 @@ services:
       POSTGRES_USER: faltauno
       POSTGRES_PASSWORD: faltauno_dev
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -28,7 +28,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: faltauno
       MONGO_INITDB_ROOT_PASSWORD: faltauno_dev
     ports:
-      - "27017:27017"
+      - '27017:27017'
     volumes:
       - mongo_data:/data/db
 
@@ -37,7 +37,7 @@ services:
     container_name: faltauno-redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis_data:/data
 
@@ -47,8 +47,8 @@ services:
     container_name: faltauno-mailpit
     restart: unless-stopped
     ports:
-      - "1025:1025"
-      - "8025:8025"
+      - '1025:1025'
+      - '8025:8025'
 
   # Visor de la base: http://localhost:5050 (contraseña de la base: faltauno_dev)
   pgadmin:
@@ -58,10 +58,10 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@faltauno.uy
       PGADMIN_DEFAULT_PASSWORD: faltauno_dev
-      PGADMIN_CONFIG_SERVER_MODE: "False"
-      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
     ports:
-      - "5050:80"
+      - '5050:80'
     volumes:
       - ./pgadmin/servers.json:/pgadmin4/servers.json:ro
       - pgadmin_data:/var/lib/pgadmin
@@ -69,16 +69,18 @@ services:
       - postgres
 
   n8n:
-    image: docker.n8n.io/n8nio/n8n:latest
+    image: docker.n8n.io/n8nio/n8n:2.45.3 # versión fija: todo el equipo usa la misma
     container_name: faltauno-n8n
     restart: unless-stopped
     environment:
       GENERIC_TIMEZONE: America/Montevideo
       TZ: America/Montevideo
     ports:
-      - "5678:5678"
+      - '5678:5678'
     volumes:
       - n8n_data:/home/node/.n8n
+      # Flujos exportados en JSON (npm run n8n:exportar / n8n:importar), versionados en Git
+      - ./n8n:/home/node/flujos
 
 volumes:
   postgres_data:

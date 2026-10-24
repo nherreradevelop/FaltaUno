@@ -1,0 +1,21 @@
+# Finales de línea uniformes (LF) para todo el equipo, sin importar el sistema operativo
+* text=auto eol=lf
+
+# Scripts de Windows con CRLF
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+*.ps1  text eol=crlf
+
+# Archivos binarios (no se tocan)
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.webp  binary
+*.ico   binary
+*.pdf   binary
+*.ttf   binary
+*.otf   binary
+*.woff  binary
+*.woff2 binary
+*.zip   binary

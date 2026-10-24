@@ -8,8 +8,7 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-  // api, web y mobile tienen cada una su eslint.config.mjs
-  "eslint.workingDirectories": [{ "mode": "auto" }],
+  // Un único eslint.config.mjs en la raíz para api, web y mobile
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
 
   "files.eol": "\n",
