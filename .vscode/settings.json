@@ -1,0 +1,17 @@
+{
+  // Formatea con Prettier al guardar, usando el .prettierrc del proyecto
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "prettier.requireConfig": true,
+
+  // Al guardar, ESLint corrige lo que puede corregir solo
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  // api, web y mobile tienen cada una su eslint.config.mjs
+  "eslint.workingDirectories": [{ "mode": "auto" }],
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+
+  "files.eol": "\n",
+  "typescript.preferences.importModuleSpecifier": "relative"
+}
