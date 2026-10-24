@@ -1,0 +1,1 @@
+docker cp db\migrations\001_esquema_inicial.sql faltauno-postgres:/tmp/001.sql; docker cp db\migrations\002_catalogos.sql faltauno-postgres:/tmp/002.sql; docker exec faltauno-postgres psql -U faltauno -d faltauno -v ON_ERROR_STOP=1 -f /tmp/001.sql; docker exec faltauno-postgres psql -U faltauno -d faltauno -v ON_ERROR_STOP=1 -f /tmp/002.sql
