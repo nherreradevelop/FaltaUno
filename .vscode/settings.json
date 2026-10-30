@@ -8,7 +8,7 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-  // Un único eslint.config.mjs en la raíz para api, web y mobile
+  // Usa el eslint.config.mjs de la raíz del repositorio
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
 
   "files.eol": "\n",
