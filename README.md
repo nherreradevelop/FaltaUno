@@ -1,15 +1,23 @@
-# FaltaUno
+# FaltaUno - API
 
-Plataforma web y móvil para organizar actividades deportivas al aire libre y encontrar compañeros.
+API REST e infraestructura de desarrollo de FaltaUno, la plataforma web y móvil para organizar actividades deportivas al aire libre y encontrar compañeros.
 Proyecto final de la carrera Analista en Tecnologías de la Información (Universidad ORT Uruguay).
+
+## Repositorios
+
+| Repositorio                                                           | Contenido                                                     |
+| --------------------------------------------------------------------- | ------------------------------------------------------------- |
+| [FaltaUno](https://github.com/nherreradevelop/FaltaUno) (este)        | API, esquema de la base, Docker de desarrollo y flujos de n8n |
+| [FaltaUno-Web](https://github.com/nherreradevelop/FaltaUno-Web)       | Cliente web (React + Vite)                                    |
+| [FaltaUno-Mobile](https://github.com/nherreradevelop/FaltaUno-Mobile) | App móvil (React Native + Expo)                               |
+
+Para trabajar en la web o en la app hay que tener levantados los servicios de este repositorio (`docker compose up -d`) y la API.
 
 ## Estructura
 
 ```
 FaltaUno/
 ├── api/             API REST (Node.js + TypeScript)
-├── web/             Cliente web (React)
-├── mobile/          App móvil (React Native + Expo)
 ├── db/migrations/   Scripts SQL del esquema de PostgreSQL
 ├── n8n/             Flujos de n8n exportados (JSON)
 ├── pgadmin/         Conexión preconfigurada de pgAdmin
@@ -83,7 +91,7 @@ Las contraseñas de la nube se comparten por un canal privado, nunca en el repos
 
 ## Calidad de código
 
-- **Prettier** da el formato (`.prettierrc`) y **ESLint** revisa el código (`eslint.config.mjs`), con una única configuración en la raíz para `api`, `web` y `mobile`.
+- **Prettier** da el formato (`.prettierrc`) y **ESLint** revisa el código (`eslint.config.mjs`).
 - **Husky** ejecuta ambos automáticamente sobre los archivos de cada commit (`lint-staged`). Si ESLint encuentra un error, el commit se cancela.
 - VS Code formatea al guardar (`.vscode/settings.json`).
 
@@ -96,17 +104,7 @@ npm run format:check   # verificar el formato sin modificar
 
 ### TypeScript estricto
 
-`tsconfig.base.json` define el modo estricto para todo el repositorio. El `tsconfig.json` de cada proyecto lo extiende:
-
-```jsonc
-// api/tsconfig.json y web/tsconfig.json
-{ "extends": "../tsconfig.base.json", "compilerOptions": { /* opciones propias del proyecto */ } }
-
-// mobile/tsconfig.json (Expo ya trae su base; se combinan las dos)
-{ "extends": ["expo/tsconfig.base", "../tsconfig.base.json"] }
-```
-
-> Al crear `web` (Vite) o `mobile` (Expo), las plantillas pueden traer su propio ESLint: borren su `eslint.config.*` y quiten ESLint de su `package.json`, para que se use la configuración de la raíz.
+`tsconfig.base.json` define el modo estricto, y `api/tsconfig.json` lo extiende con las opciones de Node.js 22 (compila de `src/` a `dist/`).
 
 ## n8n
 
@@ -120,7 +118,7 @@ npm run n8n:importar   # carpeta n8n/ -> tu n8n
 ## Integración continua
 
 GitHub Actions (`.github/workflows/ci.yml`) se ejecuta en cada pull request y push a `develop` o `main`:
-lint y formato siempre; compilación y pruebas de `api`, `web` y `mobile` en cuanto cada proyecto tenga su `package.json`.
+lint y formato siempre; compilación y pruebas de la API en cuanto exista `api/package.json`.
 
 ## Forma de trabajo
 

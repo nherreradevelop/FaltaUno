@@ -2,7 +2,6 @@ node_modules
 .env
 dist
 coverage
-.expo
 .env.*
 !.env.example
 
@@ -19,7 +18,3 @@ npm-debug.log*
 .DS_Store
 Thumbs.db
 desktop.ini
-
-# Builds nativos de Expo
-mobile/android/
-mobile/ios/
